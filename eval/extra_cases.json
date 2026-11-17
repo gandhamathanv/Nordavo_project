@@ -1,0 +1,80 @@
+{
+  "about": "Hand-labelled cases written by the developer (with Claude Code), NOT by the model under test (Gemini). They target two weaknesses seen in a dry run over the practice tickets: English/German tickets labelled as Dutch, and FAQ-covered integration questions being escalated. Labels follow the brief and docs/faq.md. priority is null where the brief leaves room for judgement; null fields are not scored. Dutch/German bodies have an English gloss.",
+  "cases": [
+    {
+      "id": "X01",
+      "subject": "URGENT clock-in broken",
+      "body": "URGENT: since 07:30 none of the staff in our two cafés in Utrecht can clock in. The app just shows a spinning wheel. Breakfast service starts at 8.",
+      "channel": "email",
+      "customer_plan": "Plus",
+      "label": {"language": "en", "category": "bug", "priority": "P1", "action": "handoff",
+                "reason": "English. Many users blocked right now: P1, needs a human."}
+    },
+    {
+      "id": "X02",
+      "subject": "Invoice",
+      "body": "Hi, quick one: where do I download last month's invoice? Our bookkeeper in Zwolle needs it. Thanks, Pieter",
+      "channel": "chat",
+      "customer_plan": "Basis",
+      "label": {"language": "en", "category": "billing", "priority": "P4", "action": "reply",
+                "reason": "English how-to, answered by F06."}
+    },
+    {
+      "id": "X03",
+      "subject": "AFAS",
+      "body": "We have the Basis plan. Can Roosterly send our approved hours to AFAS?",
+      "channel": "form",
+      "customer_plan": "Basis",
+      "label": {"language": "en", "category": "question", "priority": "P4", "action": "reply",
+                "reason": "English. F04 answers it: AFAS export exists and is part of the Plus plan."}
+    },
+    {
+      "id": "X04",
+      "subject": "Uren naar AFAS",
+      "gloss": "Can Roosterly send our approved hours to AFAS? We have Basis.",
+      "body": "Kan Roosterly onze goedgekeurde uren naar AFAS sturen? We hebben Basis.",
+      "channel": "email",
+      "customer_plan": "Basis",
+      "label": {"language": "nl", "category": "question", "priority": "P4", "action": "reply",
+                "reason": "Dutch. F04 answers it: AFAS export exists and is part of the Plus plan."}
+    },
+    {
+      "id": "X05",
+      "subject": "Falsche Schichten",
+      "gloss": "Since this morning the app shows wrong shifts for all employees in Venlo. Please check urgently.",
+      "body": "Seit heute Morgen zeigt die App bei allen Mitarbeitern in Venlo falsche Schichten an. Bitte dringend prüfen.",
+      "channel": "email",
+      "customer_plan": "Plus",
+      "label": {"language": "de", "category": "bug", "priority": null, "action": "handoff",
+                "reason": "German bug report not covered by the FAQ: human."}
+    },
+    {
+      "id": "X06",
+      "subject": "Untranslated button",
+      "body": "The Dutch word 'Uitnodigen' on the invite button is not translated in the English app. Minor thing.",
+      "channel": "chat",
+      "customer_plan": "Basis",
+      "label": {"language": "en", "category": "bug", "priority": "P4", "action": "handoff",
+                "reason": "English cosmetic bug, not in the FAQ: human, no urgency."}
+    },
+    {
+      "id": "X07",
+      "subject": "Export Loket",
+      "gloss": "We use Loket.nl. Can I export the hours per month?",
+      "body": "Wij gebruiken Loket.nl. Kan ik de uren per maand exporteren?",
+      "channel": "email",
+      "customer_plan": "Plus",
+      "label": {"language": "nl", "category": "question", "priority": "P4", "action": "reply",
+                "reason": "Dutch. F04: exports to Loket.nl run per pay period (week, four weeks or month); Plus plan."}
+    },
+    {
+      "id": "X08",
+      "subject": "Login trouble",
+      "body": "Morning team, I forgot my password and the reset email never arrived. What now? Regards, Sanne",
+      "channel": "email",
+      "customer_plan": "Basis",
+      "label": {"language": "en", "category": "question", "priority": null, "action": "reply",
+                "reason": "English. F01 covers it, including checking the spam folder."}
+    }
+  ]
+}
