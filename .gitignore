@@ -1,0 +1,20 @@
+# Secrets
+.env
+
+# Local agent state (write-ahead journal, LLM cache, lock file)
+.state/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# OS
+.DS_Store
+
+# Claude Code local settings
+.claude/settings.local.json
