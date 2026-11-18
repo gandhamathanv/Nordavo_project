@@ -77,8 +77,9 @@ class GeminiLLM:
                     raise LLMUnavailable(f"{purpose}: Gemini error {last_error}: {exc.message}") from exc
                 self._sleep(self._retry_delay(exc, attempt))
                 continue
-            except (ValidationError, ValueError) as exc:  # malformed JSON: ask again
+            except (ValidationError, ValueError) as exc:  # malformed JSON: ask again, after a pause (1s, 2s, 4s, 8s...)
                 last_error = f"invalid output: {str(exc)[:120]}"
+                self._sleep(min(2 ** (attempt - 1), 8))
                 continue
             except Exception as exc:  # network errors from the SDK's HTTP layer
                 last_error = f"{type(exc).__name__}: {str(exc)[:120]}"

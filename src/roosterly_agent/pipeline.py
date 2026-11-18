@@ -11,9 +11,10 @@ from pydantic import BaseModel
 
 from . import prompts
 from .faq import Faq, anchors_present
-from .guards import contains_payment_details, detect_language, redact
+from .guards import (contact_details, contains_payment_details, detect_language, foreign_contact_details, redact,
+                     reply_commitments, rule_keyword_hits)
 from .llm import add_usage
-from .policy import PreCheck, Route, precheck, route
+from .policy import MAX_BODY_CHARS, PreCheck, Route, precheck, route
 from .schemas import LANGUAGE_NAMES, Decision, Draft, Ticket, Triage, Verification
 
 T = TypeVar("T", bound=BaseModel)
@@ -24,6 +25,8 @@ class LLM(Protocol):
 
 
 def _payload(language: str, category: str, priority: str, reason: str, confidence: float) -> dict[str, Any]:
+    if not 0.0 <= confidence <= 1.0:      # NaN, inf or out of range: report "unknown", never a made-up 1.0
+        confidence = 0.0
     return {"language": language, "category": category, "priority": priority,
             "reason": reason, "confidence": round(max(0.0, min(1.0, confidence)), 2)}
 
@@ -37,7 +40,8 @@ class Pipeline:
     def decide(self, ticket: Ticket, related: list[str] | None = None) -> Decision:
         pre = precheck(ticket)
         flags = (["payment_details_redacted"] if pre.redactions else []) + \
-                (["injection_pattern"] if pre.injection else [])
+                (["injection_pattern"] if pre.injection else []) + \
+                (["input_truncated"] if pre.truncated else [])
         usage: dict[str, int] = {}
 
         if pre.empty:
@@ -125,8 +129,20 @@ class Pipeline:
             problems.append(f"no verbatim help-centre details from {missing}")
         if contains_payment_details(draft.reply):
             problems.append("reply contains payment details")
+        # Deterministic net behind the reviewer (same model as the drafter): links, addresses and numbers must come
+        # from the cited help-centre sections, and a reply may not touch an always-human topic or make a promise.
+        foreign = foreign_contact_details(draft.reply, contact_details(self.faq.render(faq_ids)))
+        if foreign:
+            problems.append(f"contact details outside the cited help-centre sections: {foreign}")
+        rules_in_reply = rule_keyword_hits(draft.reply)
+        if rules_in_reply:
+            problems.append(f"reply touches an always-human topic: {rules_in_reply}")
+        commitments = reply_commitments(draft.reply)
+        if commitments:
+            problems.append("reply makes a commitment: " + "; ".join(commitments)[:200])
         checks = {"verdict": v.verdict, "language_detected": detected, "language_scores": scores,
-                  "anchors_found": hits, "problems": problems}
+                  "anchors_found": hits, "foreign_contacts": foreign, "rules_in_reply": rules_in_reply,
+                  "commitments": commitments, "problems": problems}
         return problems, checks
 
     def _handoff(self, triage: Triage, r: Route, pre: PreCheck, related: list[str] | None,
@@ -138,6 +154,8 @@ class Pipeline:
             parts.append(extra)
         if pre.redactions:
             parts.append("Payment details in the ticket were redacted by the agent.")
+        if pre.truncated:
+            parts.append(f"The ticket is very long: the agent read only its first {MAX_BODY_CHARS} characters.")
         if "injection_suspected" in base["flags"] or "injection_pattern" in base["flags"]:
             parts.append("Warning: the ticket contains text that tries to instruct an AI; it was ignored.")
         if related:

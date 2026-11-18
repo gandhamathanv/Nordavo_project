@@ -14,6 +14,11 @@ from .schemas import Ticket, Triage
 CONFIDENCE_MIN = 0.75        # below this the agent counts itself unsure -> human
 SPAM_CONFIDENCE_MIN = 0.80   # closing a real customer's ticket is costly, so spam needs more certainty
 
+# Input bounds. A real ticket is a few hundred characters; longer ones (quoted mail threads) still fit.
+MAX_BODY_CHARS = 8000        # what the model reads of a ticket; a longer ticket always goes to a human
+MAX_SUBJECT_CHARS = 300
+MAX_SCAN_CHARS = 50_000      # what the regex guards scan, so a multi-megabyte ticket cannot stall them
+
 # Minimum priority per client rule, straight from the brief's priority table:
 # P1 = "a security or legal risk", P2 = "money or the contract is involved".
 PRIORITY_FLOOR = {
@@ -45,6 +50,7 @@ class PreCheck:
     keyword_rules: list[str]
     empty: bool
     body_language: str | None
+    truncated: bool = False         # subject or body was cut before the model saw it
 
 
 def is_empty(ticket: Ticket) -> bool:
@@ -53,16 +59,21 @@ def is_empty(ticket: Ticket) -> bool:
 
 
 def precheck(ticket: Ticket) -> PreCheck:
-    subject, r1 = redact(ticket.subject or "")
-    body, r2 = redact(ticket.body or "")
-    text = f"{subject}\n{body}"
-    return PreCheck(
+    raw_subject, raw_body = ticket.subject or "", ticket.body or ""
+    subject, r1 = redact(raw_subject[:MAX_SCAN_CHARS])
+    body, r2 = redact(raw_body[:MAX_SCAN_CHARS])
+    scanned = f"{subject}\n{body}"     # rules and injection are looked for in everything that was scanned...
+    truncated = len(raw_subject) > MAX_SUBJECT_CHARS or len(raw_body) > MAX_BODY_CHARS
+    shown_body = body[:MAX_BODY_CHARS]
+    text = f"{subject[:MAX_SUBJECT_CHARS]}\n{shown_body}" + ("\n[... truncated ...]" if truncated else "")
+    return PreCheck(                     # ...but the model only reads `text`
         text=text,
         redactions=r1 + r2,
-        injection=injection_signals(text),
-        keyword_rules=rule_keyword_hits(text),
+        injection=injection_signals(scanned),
+        keyword_rules=rule_keyword_hits(scanned),
         empty=is_empty(ticket),
-        body_language=detect_language(body)[0],
+        body_language=detect_language(shown_body)[0],
+        truncated=truncated,
     )
 
 
@@ -92,6 +103,10 @@ def route(triage: Triage, pre: PreCheck, valid_faq_ids: set[str]) -> Route:
     def out(action: str, reason: str) -> Route:
         return Route(action, reason, priority, raised_by, rules)
 
+    if not 0.0 <= triage.confidence <= 1.0:   # False for NaN too. 87 (a percentage), 5.0, inf, -1: malformed output
+        return out("handoff", "Handoff: the model reported an invalid confidence value, so none of its answer is trusted.")
+    if pre.truncated and not rules:
+        return out("handoff", f"Handoff: ticket too long to read in full (the agent read the first {MAX_BODY_CHARS} characters).")
     if triage.is_spam and triage.confidence >= SPAM_CONFIDENCE_MIN and not rules:
         return out("close", "Close: spam, not a customer request.")
     if rules:

@@ -1,8 +1,11 @@
 """Deterministic safety checks that run without an LLM.
 
+- normalise_text():    NFKC + no invisible characters, so every regex below sees what a human reader sees.
 - redact():            removes payment details before text reaches the LLM, a log line or the helpdesk.
 - injection_signals(): spots text that tries to instruct an AI ("ignore previous instructions", ...).
 - rule_keyword_hits(): a keyword safety net for the client's always-a-human rules, in nl/en/de.
+- foreign_contact_details() / reply_commitments(): what a drafted reply may not contain: links, addresses and
+                       numbers the help centre does not give, and promises (refund, discount, call-back, deadline).
                        It can only ever force a handoff, so a false positive costs a human a minute,
                        while a false negative is still caught by the LLM's own rule_triggers.
 - detect_language():   stopword vote between nl/en/de, used to check the language of a draft reply.
@@ -11,14 +14,34 @@
 from __future__ import annotations
 
 import re
+import unicodedata
+
+# --------------------------------------------------------------------------- normalisation
+
+# Zero-width, soft-hyphen and bidi-format characters: "4111<ZWSP>1111" and "ig<ZWSP>nore" read normally to a person.
+_INVISIBLE = re.compile("[\u00ad\u200b-\u200f\u202a-\u202e\u2060-\u2064\ufeff]")
+
+
+def normalise_text(text: str) -> str:
+    """NFKC (fullwidth letters and digits, no-break spaces and ligatures become plain ones) without invisible
+    characters. Every guard below works on this, so formatting tricks cannot hide data from a regex."""
+    return _INVISIBLE.sub("", unicodedata.normalize("NFKC", text))
+
 
 # --------------------------------------------------------------------------- payment details
 
 _CARD = re.compile(r"(?<![\d€.,])(?:\d[ -]?){12,18}\d(?![\d])")
-_IBAN = re.compile(r"\b[A-Z]{2}\d{2}[ ]?(?:[A-Za-z0-9]{4}[ ]?){2,7}[A-Za-z0-9]{1,4}\b")
-_CVC = re.compile(r"\b(?:cvc|cvv2?|cid|csc|beveiligingscode|kaartcode|prüfnummer|sicherheitscode)\b\s*[:=]?\s*\d{3,4}\b", re.I)
+# Four groups of four digits that may also be split by dots, tabs or line breaks: "4111.1111.1111.1111".
+_CARD_GROUPED = re.compile(r"(?<![\d€.,])\d{4}(?:[\s.\-]{1,2}\d{4}){3}(?!\d)")
+_IBAN = re.compile(r"\b[A-Z]{2}\d{2}[ .-]?(?:[A-Z0-9]{4}[ .-]?){2,7}[A-Z0-9]{1,4}\b", re.I)
+_CVC = re.compile(
+    r"\b(?:cvc2?|cvv2?|cid|csc|security\s+code|verification\s+(?:code|number)|beveiligingscode|veiligheidscode|"
+    r"kaartcode|pr[üu]fnummer|kartenpr[üu]fnummer|sicherheitscode|pin(?:code)?)"
+    r"(?:[\s-]*(?:code|number|nummer))?\s*[:=]?\s*\d{3,4}\b",
+    re.I,
+)
 _EXPIRY = re.compile(
-    r"\b(?:geldig tot|vervaldatum|verloopt|exp(?:iry|iration)?(?: date)?|valid (?:until|thru)|gültig bis)\b\s*[:]?\s*\d{1,2}\s*/\s*\d{2,4}",
+    r"\b(?:geldig tot|vervaldatum|verloopt|exp(?:ir(?:es|e|y|ation))?(?: date)?|valid (?:until|thru)|gültig bis)\b\s*[:]?\s*\d{1,2}\s*/\s*\d{2,4}",
     re.I,
 )
 
@@ -37,7 +60,9 @@ def redact(text: str) -> tuple[str, list[str]]:
     """Return (text without payment details, kinds of data removed).
 
     Any 13-19 digit run is removed, Luhn-valid or not: a mistyped card number is still a card number.
+    The returned text is the normalised one (see normalise_text).
     """
+    text = normalise_text(text)
     kinds: list[str] = []
 
     def card(m: re.Match) -> str:
@@ -54,6 +79,7 @@ def redact(text: str) -> tuple[str, list[str]]:
     text = _IBAN.sub(tag("iban", "[REDACTED IBAN]"), text)
     text = _CVC.sub(tag("cvc", "[REDACTED CVC]"), text)
     text = _EXPIRY.sub(tag("card_expiry", "[REDACTED EXPIRY]"), text)
+    text = _CARD_GROUPED.sub(card, text)
     text = _CARD.sub(card, text)
     return text, kinds
 
@@ -78,7 +104,7 @@ _INJECTION_RE = re.compile("|".join(_INJECTION), re.I)
 
 
 def injection_signals(text: str) -> list[str]:
-    return [m.group(0) for m in _INJECTION_RE.finditer(text)]
+    return [m.group(0) for m in _INJECTION_RE.finditer(normalise_text(text))]
 
 
 # --------------------------------------------------------------------------- client rules
@@ -119,7 +145,67 @@ _RULE_RES = {rule: re.compile("|".join(pats), re.I) for rule, pats in RULE_KEYWO
 
 
 def rule_keyword_hits(text: str) -> list[str]:
+    text = normalise_text(text)
     return [rule for rule, rx in _RULE_RES.items() if rx.search(text)]
+
+
+# --------------------------------------------------------------------------- what a reply may contain
+
+# Contact details: any link with a scheme or "www.", mailto/tel/javascript links, e-mail addresses, phone numbers,
+# and bare host names that end in a common top-level domain. A reply may only repeat the ones in the help-centre
+# sections it cites, so a steered drafter cannot slip a phishing link or a made-up number into a customer message.
+_LINK = re.compile(r"\b(?:https?://|www\.)[^\s<>()\[\]\"']+|\b(?:mailto|tel|javascript):[^\s<>()\[\]\"']+", re.I)
+_EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
+# Top-level domains only if they are not also everyday words ("de", "be", "me", "us", "ga", "co" are left out, so a
+# sentence like "...groet.De Team" is not mistaken for a host). Links with a scheme or "www." are caught anyway.
+_TLDS = ("nl|com|eu|org|net|io|app|dev|info|biz|uk|fr|ru|cn|xyz|top|online|site|shop|link|click|tk|ml|cf|gq|example")
+_HOST = re.compile(rf"\b(?:[a-z0-9-]+\.)+(?:{_TLDS})\b(?:/[^\s<>()\[\]\"']*)?", re.I)
+_PHONE = re.compile(r"(?<![\w.])\+?\d(?:[\s().-]?\d){8,}(?!\w)")
+
+
+def _contact_key(token: str) -> str:
+    token = token.lower().rstrip(".,;:!?)]'\"")
+    return re.sub(r"^(?:https?://)?(?:www\.)?", "", token).rstrip("/")
+
+
+def contact_details(text: str) -> set[str]:
+    """Links, addresses, hosts and phone numbers in `text`, lower-cased, without scheme or trailing punctuation."""
+    text = normalise_text(text)
+    return {key for rx in (_LINK, _EMAIL, _HOST, _PHONE) for m in rx.finditer(text) if (key := _contact_key(m.group(0)))}
+
+
+def foreign_contact_details(text: str, allowed: set[str]) -> list[str]:
+    """Contact details in `text` that are not in `allowed`. A host is fine when it is the start of an allowed link
+    ("app.roosterly.nl" for "app.roosterly.nl/login"); a longer path than the allowed one is not."""
+    return sorted(t for t in contact_details(text) if not any(a == t or a.startswith(t + "/") for a in allowed))
+
+
+# Commitments the support team must never make in an automatic reply (client rule: refunds, cancellations and
+# contract changes go to a human). Deliberately narrow: words that also appear in negations ("we cannot promise")
+# or in help-centre facts ("within 10 minutes") are not listed.
+_COMMITMENT = re.compile("|".join([
+    # refunds and money back
+    r"\brefund", r"\bterugbetal", r"\bterugstort", r"\bterugboek", r"\bcreditnota\b", r"\berstatt", r"\bzurückzahl",
+    r"\b(?:storten|betalen|boeken|maken)\b[^.!?]{0,60}\bterug\b",
+    r"\b(?:pay|send|give)\b[^.!?]{0,30}\bback\b",
+    # discounts, credit, compensation, free things
+    r"\bgratis\b", r"\bkorting\b", r"\btegoed\b", r"\bcompensatie\b", r"\bkwijtschelding\b",
+    r"\bfree\s+of\s+charge\b", r"\bfor\s+free\b", r"\bdiscount", r"\bcredit(?:ed)?\b(?!\s+card)", r"\bcompensat",
+    r"\bkostenlos\b", r"\brabatt", r"\bgutschrift", r"\bentschädigung",
+    # call-backs and deadlines
+    r"\bterugbel", r"\b(?:we|wij)\s+bellen\b", r"\bcall\s+you\s+back\b", r"\bwe(?:'ll|\s+will)\s+call\b",
+    r"\brückruf", r"\bwir\s+rufen\b",
+    r"\bbinnen\s+(?:\d+|een|één|twee|drie|vier|vijf)\s+(?:werk)?(?:uur|uren|dag|dagen|week|weken)\b",
+    r"\bwithin\s+(?:\d+|an?|one|two|three|four|five)\s+(?:business\s+|working\s+)?(?:hours?|days?|weeks?)\b",
+    r"\binnerhalb\s+(?:von\s+)?(?:\d+|einer|einem|zwei|drei|vier|fünf)\s+(?:Stunden?|Tagen?|Wochen?)\b",
+    # something was done to the account
+    r"\bis\s+(?:per\s+direct\s+)?opgezegd\b", r"\bhas\s+been\s+(?:cancell?ed|terminated|refunded)\b",
+    r"\b(?:wurde|ist)\s+gekündigt\b",
+]), re.I)
+
+
+def reply_commitments(text: str) -> list[str]:
+    return [m.group(0) for m in _COMMITMENT.finditer(normalise_text(text))]
 
 
 # --------------------------------------------------------------------------- language

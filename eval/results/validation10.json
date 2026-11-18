@@ -1,0 +1,644 @@
+{
+  "tag": "validation10",
+  "model": "gemini-3.5-flash-lite",
+  "created_at": "2026-11-18T14:59:42+00:00",
+  "metrics": {
+    "nordavo": {
+      "action_accuracy": "10/10 (100%)",
+      "category_accuracy": "10/10 (100%)",
+      "priority_accuracy": "10/10 (100%)",
+      "language_accuracy": "10/10 (100%)",
+      "all_scored_fields_correct": "10/10 (100%)",
+      "unsafe_decisions": 0,
+      "over_escalations": 0,
+      "expected_replies_sent": "6/6 (100%)",
+      "reply_faq_match": "6/6 (100%)",
+      "reply_language_ok": "6/6 (100%)",
+      "errors": 0
+    },
+    "avg_tokens_per_ticket": {
+      "input_tokens": 2227,
+      "output_tokens": 341,
+      "thinking_tokens": 0
+    },
+    "llm_calls_per_ticket": 2.2,
+    "cost_per_100_tickets_usd": 0.1521
+  },
+  "rows": [
+    {
+      "id": "E01",
+      "source": "nordavo",
+      "subject": "App crashes",
+      "body": "The app crashes immediately on my iPhone 8 (iOS 15). Other staff are fine.",
+      "gloss": null,
+      "gold": {
+        "action": "reply",
+        "reason": "English ticket. FAQ F12 covers it: the app needs iOS 16 or later, so we can answer in English without a human.",
+        "category": "bug",
+        "language": "en",
+        "priority": "P3"
+      },
+      "gold_faq": [
+        "F12"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "en",
+        "category": "bug",
+        "priority": "P3",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F12."
+      ],
+      "faq_ids": [
+        "F12"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "One customer is blocked on a specific old device, but there are other staff members unaffected and a workaround or known system requirement applies (P3). Reply: answered by help centre F12.",
+      "draft_reply": "Hello, the mobile app works on iOS 16 and later and Android 10 and later. Best regards, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Hello, the mobile app works on iOS 16 and later and Android 10 and later. Best regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "en",
+        "language_scores": {
+          "nl": 0,
+          "en": 6,
+          "de": 0
+        },
+        "anchors_found": [
+          "iOS 16",
+          "Android 10"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2559,
+        "output_tokens": 434,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "E02",
+      "source": "nordavo",
+      "subject": "Btw-nummer",
+      "body": "Ons btw-nummer is veranderd. Kunnen jullie het nieuwe op onze facturen zetten?",
+      "gloss": null,
+      "gold": {
+        "action": "reply",
+        "reason": "How to change invoice details is in FAQ F06. Reply in Dutch.",
+        "category": "billing",
+        "language": "nl",
+        "priority": "P4"
+      },
+      "gold_faq": [
+        "F06"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "nl",
+        "category": "billing",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F06."
+      ],
+      "faq_ids": [
+        "F06"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "This is a standard how-to question regarding invoice details with no urgency or blocking issues (P4). Reply: answered by help centre F06.",
+      "draft_reply": "Beste klant, je kunt je bedrijfsnaam, adres of btw-nummer voor toekomstige facturen wijzigen onder Instellingen → Bedrijfsgegevens. Vriendelijke groet, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Dear customer, you can change your company name, address or VAT number for future invoices under Settings → Company details. Kind regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "nl",
+        "language_scores": {
+          "nl": 6,
+          "en": 1,
+          "de": 0
+        },
+        "anchors_found": [
+          "Instellingen → Bedrijfsgegevens"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2637,
+        "output_tokens": 403,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "E03",
+      "source": "nordavo",
+      "subject": "Terugbetaling",
+      "body": "We waren in augustus dicht wegens verbouwing. Kunnen we die maand terugkrijgen?",
+      "gloss": null,
+      "gold": {
+        "action": "handoff",
+        "reason": "Refund request ('terugkrijgen' = get back). Client rule: refunds always go to a human.",
+        "category": "billing",
+        "language": "nl",
+        "priority": "P2"
+      },
+      "gold_faq": [],
+      "pred": {
+        "action": "handoff",
+        "language": "nl",
+        "category": "billing",
+        "priority": "P2",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Handoff: client rule, refunds and disputed charges always go to a human."
+      ],
+      "faq_ids": [],
+      "rule_triggers": [
+        "refund_or_dispute"
+      ],
+      "flags": [],
+      "reason": "Money or the contract is involved via a refund request (P2). Handoff: client rule, refunds and disputed charges always go to a human.",
+      "draft_reply": null,
+      "handoff_note": "The customer is requesting a refund for August due to being closed for renovations. Refund requests must always be handled by a human. Client rule: refund_or_dispute.",
+      "back_translation_en": null,
+      "checks": {},
+      "usage": {
+        "llm_calls": 1,
+        "input_tokens": 1681,
+        "output_tokens": 215,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "E04",
+      "source": "nordavo",
+      "subject": "Dienst ruilen",
+      "body": "Hoe ruil ik een dienst met een collega?",
+      "gloss": null,
+      "gold": {
+        "action": "reply",
+        "reason": "Dutch how-to question about swapping shifts, answered by FAQ F03. Reply in Dutch.",
+        "category": "question",
+        "language": "nl",
+        "priority": "P4"
+      },
+      "gold_faq": [
+        "F03"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "nl",
+        "category": "question",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F03."
+      ],
+      "faq_ids": [
+        "F03"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "This is a standard how-to question with no urgency or blockage (P4). Reply: answered by help centre F03.",
+      "draft_reply": "Beste klant, medewerkers openen de dienst in de app en tikken op \"Ruil aanbieden\". Colleagues met dezelfde rol kunnen de ruil accepteren. De manager keurt dit goed via Rooster → Verzoeken. Met vriendelijke groet, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Dear customer, employees open the shift in the app and tap \"Ruil aanbieden\". Colleagues with the same role can accept the swap. The manager approves this via Rooster → Verzoeken. Sincerely, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "nl",
+        "language_scores": {
+          "nl": 12,
+          "en": 1,
+          "de": 0
+        },
+        "anchors_found": [
+          "Rooster → Verzoeken",
+          "Ruil aanbieden"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2641,
+        "output_tokens": 465,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "E05",
+      "source": "nordavo",
+      "subject": "Google Agenda",
+      "body": "Graag een koppeling met Google Agenda voor de diensten.",
+      "gloss": null,
+      "gold": {
+        "action": "reply",
+        "reason": "Feature request (Google Calendar sync). Acknowledge in Dutch and point to the roadmap (F10).",
+        "category": "feature_request",
+        "language": "nl",
+        "priority": "P4"
+      },
+      "gold_faq": [
+        "F10"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "nl",
+        "category": "feature_request",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F10."
+      ],
+      "faq_ids": [
+        "F10"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "This is a feature request with no urgency (P4). Reply: answered by help centre F10.",
+      "draft_reply": "Beste klant, bedankt voor je idee. We lezen elk idee en functieverzoeken komen op onze openbare roadmap te staan op roadmap.roosterly.nl, waar je op ideeën kunt stemmen. Met vriendelijke groet, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Dear customer, thank you for your idea. We read every idea and feature requests end up on our public roadmap at roadmap.roosterly.nl, where you can vote on ideas. Kind regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "nl",
+        "language_scores": {
+          "nl": 15,
+          "en": 0,
+          "de": 0
+        },
+        "anchors_found": [
+          "roadmap.roosterly.nl"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2582,
+        "output_tokens": 430,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "E06",
+      "source": "nordavo",
+      "subject": "Can't publish rota",
+      "body": "When I click Publish I get 'Something went wrong'. Next week's rota is not visible for staff.",
+      "gloss": null,
+      "gold": {
+        "action": "handoff",
+        "reason": "One customer blocked from publishing: P2, needs an engineer.",
+        "category": "bug",
+        "language": "en",
+        "priority": "P2"
+      },
+      "gold_faq": [],
+      "pred": {
+        "action": "handoff",
+        "language": "en",
+        "category": "bug",
+        "priority": "P2",
+        "confidence": 0.95
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Handoff: not covered by the help centre: Why do I get 'Something went wrong' when clicking Publish and how can I publish the rota?."
+      ],
+      "faq_ids": [],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "One customer is blocked from publishing the rota and staff cannot see next week's schedule (P2). Handoff: not covered by the help centre: Why do I get 'Something went wrong' when clicking Publish and how can I publish the rota?.",
+      "draft_reply": null,
+      "handoff_note": "Customer on the Plus plan is experiencing a 'Something went wrong' error when trying to publish the rota, blocking staff from seeing next week's schedule. This is not covered by the help centre and requires human technical support.",
+      "back_translation_en": null,
+      "checks": {},
+      "usage": {
+        "llm_calls": 1,
+        "input_tokens": 1683,
+        "output_tokens": 234,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "E07",
+      "source": "nordavo",
+      "subject": "Prijs Plus",
+      "body": "Wat kost Plus voor 25 medewerkers?",
+      "gloss": null,
+      "gold": {
+        "action": "reply",
+        "reason": "Price question answered by F05 (25 x €6 = €150 excl. VAT). Reply in Dutch.",
+        "category": "billing",
+        "language": "nl",
+        "priority": "P4"
+      },
+      "gold_faq": [
+        "F05"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "nl",
+        "category": "billing",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F05."
+      ],
+      "faq_ids": [
+        "F05"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "It is a straightforward pricing inquiry with no urgency or blocking issues (P4). Reply: answered by help centre F05.",
+      "draft_reply": "Beste klant, Plus kost €6 per actieve medewerker per maand exclusief btw. Je kunt op elk moment upgraden via Instellingen → Abonnement, waarna de nieuwe prijs geldt vanaf de volgende factuur. Vriendelijke groet, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Dear customer, Plus costs €6 per active employee per month excluding VAT. You can upgrade at any time via Settings → Subscription, after which the new price applies from the next invoice. Kind regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "nl",
+        "language_scores": {
+          "nl": 7,
+          "en": 0,
+          "de": 0
+        },
+        "anchors_found": [
+          "Instellingen → Abonnement",
+          "€6"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2632,
+        "output_tokens": 449,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "E08",
+      "source": "nordavo",
+      "subject": "Investeringskans",
+      "body": "Verdubbel je geld in 7 dagen met ons cryptofonds.",
+      "gloss": null,
+      "gold": {
+        "action": "close",
+        "reason": "Spam (crypto offer): close it.",
+        "category": "other",
+        "language": "nl",
+        "priority": "P4"
+      },
+      "gold_faq": [],
+      "pred": {
+        "action": "close",
+        "language": "nl",
+        "category": "other",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Close: spam, not a customer request."
+      ],
+      "faq_ids": [],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "This is unsolicited spam requiring no action (P4). Close: spam, not a customer request.",
+      "draft_reply": null,
+      "handoff_note": null,
+      "back_translation_en": null,
+      "checks": {},
+      "usage": {
+        "llm_calls": 1,
+        "input_tokens": 1675,
+        "output_tokens": 186,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "E09",
+      "source": "nordavo",
+      "subject": "Inzageverzoek",
+      "body": "Ik wil graag inzage in alle persoonsgegevens die jullie over mij bewaren (AVG).",
+      "gloss": null,
+      "gold": {
+        "action": "handoff",
+        "reason": "GDPR access request ('inzageverzoek', AVG = Dutch GDPR): always a human.",
+        "category": "other",
+        "language": "nl",
+        "priority": "P2"
+      },
+      "gold_faq": [],
+      "pred": {
+        "action": "handoff",
+        "language": "nl",
+        "category": "other",
+        "priority": "P2",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Handoff: client rule, personal data (GDPR/AVG) requests always go to a human."
+      ],
+      "faq_ids": [],
+      "rule_triggers": [
+        "gdpr"
+      ],
+      "flags": [],
+      "reason": "Personal data requests require human handling and involve regulatory compliance (P2). Handoff: client rule, personal data (GDPR/AVG) requests always go to a human.",
+      "draft_reply": null,
+      "handoff_note": "The customer submitted a GDPR access request. A human agent needs to process this personal data request according to company data privacy procedures. Client rule: gdpr.",
+      "back_translation_en": null,
+      "checks": {},
+      "usage": {
+        "llm_calls": 1,
+        "input_tokens": 1680,
+        "output_tokens": 210,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "E10",
+      "source": "nordavo",
+      "subject": "Onderhoud",
+      "body": "Is er vanavond onderhoud gepland?",
+      "gloss": null,
+      "gold": {
+        "action": "reply",
+        "reason": "Asks about planned maintenance tonight. Point to the status page (F11), in Dutch.",
+        "category": "question",
+        "language": "nl",
+        "priority": "P4"
+      },
+      "gold_faq": [
+        "F11"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "nl",
+        "category": "question",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F11."
+      ],
+      "faq_ids": [
+        "F11"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "This is a routine informational question about system status with no urgency (P4). Reply: answered by help centre F11.",
+      "draft_reply": "Hallo. Je kunt de actuele storingen en gepland onderhoud bekijken op status.roosterly.nl. Met vriendelijke groet, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Hello. You can view the current outages and planned maintenance at status.roosterly.nl. Kind regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "nl",
+        "language_scores": {
+          "nl": 8,
+          "en": 0,
+          "de": 1
+        },
+        "anchors_found": [
+          "status.roosterly.nl"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2503,
+        "output_tokens": 385,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    }
+  ]
+}
