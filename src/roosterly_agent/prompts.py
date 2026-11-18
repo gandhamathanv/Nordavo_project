@@ -105,9 +105,15 @@ def draft_system(faq: Faq, faq_ids: list[str], language: str) -> str:
 Rules:
 - Write the whole reply in {lang}. The help-centre text below is written in English: translate the facts you
   use into {lang}. Never copy English sentences into a reply that is not in English.
+- Translate every ordinary word too, not only whole sentences: one English word such as "colleagues",
+  "employees" or "subscription" left in a {lang} reply is a mistake. Only menu paths, button labels, URLs,
+  product names (AFAS, Nmbrs, Loket.nl) and numbers stay as written in the help centre.
 - Use ONLY facts from the help-centre sections below. Add no other facts, features, prices, links, dates or advice.
 - Answer every question in the ticket. Never promise refunds, discounts, credits, compensation, call-backs,
   deadlines, priority or that something will be built or fixed.
+- If the customer asks what something costs for a number of people or items, work it out from the prices in the
+  help centre and show the calculation, for example "10 x €4 = €40 per month, excl. VAT". Arithmetic on
+  help-centre prices is allowed: it is not an added fact.
 - Copy menu paths, button labels, URLs and numbers exactly as written in the help centre, for example
   "Instellingen → Abonnement". The app shows these Dutch names. In a Dutch reply, leave out the English
   translations in brackets. In an English or German reply, keep the Dutch name and add the translation in
@@ -145,7 +151,8 @@ Return JSON:
   shorten or summarise it.
 - answers_all_questions: true if the reply answers every question in the ticket.
 - unsupported_claims: every factual statement in the reply that the help-centre sections do not support
-  (features, prices, steps, menu names, links, timelines). Greetings and politeness are not claims.
+  (features, prices, steps, menu names, links, timelines). Greetings and politeness are not claims. Arithmetic
+  on help-centre prices (for example 10 x €4 = €40) is supported, not a claim.
 - promises_or_commitments: anything the reply promises (refunds, discounts, credits, compensation, deadlines,
   call-backs, priority changes, escalation, that something will be built or fixed).
 - reply_language: the language the reply is written in: nl, en or de.

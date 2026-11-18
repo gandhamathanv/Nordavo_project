@@ -10,7 +10,7 @@ from typing import Any, Protocol, TypeVar
 from pydantic import BaseModel
 
 from . import prompts
-from .faq import Faq, anchors_present
+from .faq import Faq, anchors_present, english_leftovers
 from .guards import (contact_details, contains_payment_details, detect_language, foreign_contact_details, redact,
                      reply_commitments, rule_keyword_hits)
 from .llm import add_usage
@@ -77,14 +77,22 @@ class Pipeline:
                                      schema=Draft, purpose="draft")
         add_usage(usage, u)
         detected = detect_language(draft.reply)[0]
-        if detected != triage.language:
-            # One redraft when the reply drifted into another language (usually the FAQ's English).
-            note = (f"Your previous draft was written in {detected or 'mixed languages'}, not in "
-                    f"{LANGUAGE_NAMES[triage.language]}. Write it again, entirely in {LANGUAGE_NAMES[triage.language]}.")
+        leftovers = english_leftovers(draft.reply, self.faq, faq_ids, triage.language)
+        if detected != triage.language or leftovers:
+            # One redraft when the reply drifted into another language (usually the FAQ's English), or when English
+            # words from the help centre were left inside it (for example "Colleagues" in a Dutch sentence).
+            lang = LANGUAGE_NAMES[triage.language]
+            said = []
+            if detected != triage.language:
+                said.append(f"Your previous draft was written in {detected or 'mixed languages'}, not in {lang}.")
+            if leftovers:
+                said.append("Your previous draft left these English words untranslated: " + ", ".join(leftovers) + ".")
+            note = " ".join(said) + (f" Write it again, entirely in {lang}: translate every word. Only menu paths, "
+                                     "button labels, URLs, product names and numbers stay as written.")
             draft, u = self.llm.generate(system=draft_system, schema=Draft, purpose="redraft",
                                          user=prompts.draft_user(ticket, pre.text, triage.language, note))
             add_usage(usage, u)
-            flags.append("redrafted_for_language")
+            flags.append("redrafted_for_language" if detected != triage.language else "redrafted_for_english_words")
         verification, u = self.llm.generate(system=prompts.verify_system(self.faq, faq_ids, triage.language),
                                             user=prompts.verify_user(ticket, pre.text, draft.reply),
                                             schema=Verification, purpose="verify")
@@ -117,6 +125,9 @@ class Pipeline:
             problems.append("promises: " + "; ".join(v.promises_or_commitments)[:200])
         if v.reply_language != language:
             problems.append(f"reviewer says reply is in {v.reply_language}")
+        leftovers = english_leftovers(draft.reply, self.faq, faq_ids, language)
+        if leftovers:
+            problems.append("English words left in the reply: " + ", ".join(leftovers))
         detected, scores = detect_language(draft.reply)
         if detected != language:
             problems.append(f"language check detected {detected} instead of {language}")
@@ -141,7 +152,7 @@ class Pipeline:
         if commitments:
             problems.append("reply makes a commitment: " + "; ".join(commitments)[:200])
         checks = {"verdict": v.verdict, "language_detected": detected, "language_scores": scores,
-                  "anchors_found": hits, "foreign_contacts": foreign, "rules_in_reply": rules_in_reply,
+                  "anchors_found": hits, "english_leftovers": leftovers, "foreign_contacts": foreign, "rules_in_reply": rules_in_reply,
                   "commitments": commitments, "problems": problems}
         return problems, checks
 

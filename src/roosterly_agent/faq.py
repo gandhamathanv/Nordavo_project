@@ -68,6 +68,45 @@ def load_faq(path: Path) -> Faq:
     return Faq(raw=raw, sections=sections, rules=rules_part.strip())
 
 
+# English words of the help centre that are also ordinary words in Dutch or German (or product names), so finding
+# one in a Dutch or German reply is not a mistake.
+SHARED_WORDS = frozenset({
+    "basis", "data", "email", "manager", "managers", "plan", "plus", "roosterly", "nmbrs", "uitnodigen", "spam",
+    "link", "name", "folder", "open", "reset", "download", "user", "contract", "payroll", "feature", "roadmap",
+    "later", "default", "file", "mobile", "enter",
+})
+
+
+def _prose_words(text: str, anchors: list[str]) -> set[str]:
+    """Lower-cased words of 4+ letters from the English prose of a help-centre section: no bracketed
+    translations, quoted labels, menu paths or links (those are meant to be copied)."""
+    text = re.sub(r"\([^)]*\)", " ", text)
+    text = re.sub(r'"[^"]*"', " ", text)
+    for a in sorted(anchors, key=len, reverse=True):
+        text = text.replace(a, " ")
+    text = re.sub(r"https?://\S+|\b[\w.-]+\.(?:nl|com|eu)\S*", " ", text)
+    return {w.lower() for w in re.findall(r"[A-Za-z]{4,}", text)}
+
+
+def english_leftovers(reply: str, faq: Faq, faq_ids: list[str], language: str) -> list[str]:
+    """English words copied out of the cited help-centre sections into a Dutch or German reply (for example
+    "Colleagues" inside a Dutch sentence). Bracketed translations, quoted labels, menu paths and links in the
+    reply are ignored, and so are words Dutch and German share with English (SHARED_WORDS)."""
+    if language == "en":
+        return []
+    vocab: set[str] = set()
+    for fid in faq_ids:
+        if section := faq.sections.get(fid):
+            vocab |= _prose_words(section.text, section.anchors)
+    vocab -= SHARED_WORDS
+    text = re.sub(r"\([^)]*\)", " ", reply)
+    text = re.sub(r'"[^"]*"', " ", text)
+    for a in sorted({a for fid in faq_ids if fid in faq.sections for a in faq.sections[fid].anchors}, key=len, reverse=True):
+        text = text.replace(a, " ")
+    text = re.sub(r"https?://\S+|\b[\w.-]+\.(?:nl|com|eu)\S*", " ", text)
+    return sorted({w for w in re.findall(r"[A-Za-z\u00c4\u00d6\u00dc\u00e4\u00f6\u00fc\u00df]{4,}", text.lower()) if w in vocab})
+
+
 def normalise(text: str) -> str:
     """For verbatim checks: unify arrows, quotes, euro spacing, case and whitespace."""
     text = text.replace("->", "→").replace(" > ", " → ").replace("“", '"').replace("”", '"')

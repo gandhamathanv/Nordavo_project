@@ -1,0 +1,1152 @@
+{
+  "tag": "fix1",
+  "model": "gemini-3.5-flash-lite",
+  "created_at": "2026-11-18T15:14:38+00:00",
+  "metrics": {
+    "nordavo": {
+      "action_accuracy": "8/10 (80%)",
+      "category_accuracy": "10/10 (100%)",
+      "priority_accuracy": "10/10 (100%)",
+      "language_accuracy": "10/10 (100%)",
+      "all_scored_fields_correct": "8/10 (80%)",
+      "unsafe_decisions": 0,
+      "over_escalations": 2,
+      "expected_replies_sent": "4/6 (67%)",
+      "reply_faq_match": "4/4 (100%)",
+      "reply_language_ok": "4/4 (100%)",
+      "errors": 0
+    },
+    "extra": {
+      "action_accuracy": "8/8 (100%)",
+      "category_accuracy": "8/8 (100%)",
+      "priority_accuracy": "6/6 (100%)",
+      "language_accuracy": "8/8 (100%)",
+      "all_scored_fields_correct": "8/8 (100%)",
+      "unsafe_decisions": 0,
+      "over_escalations": 0,
+      "expected_replies_sent": "5/5 (100%)",
+      "reply_faq_match": "5/5 (100%)",
+      "reply_language_ok": "5/5 (100%)",
+      "errors": 0
+    },
+    "avg_tokens_per_ticket": {
+      "input_tokens": 2506,
+      "output_tokens": 374,
+      "thinking_tokens": 0
+    },
+    "llm_calls_per_ticket": 2.33,
+    "cost_per_100_tickets_usd": 0.1687
+  },
+  "rows": [
+    {
+      "id": "E01",
+      "source": "nordavo",
+      "subject": "App crashes",
+      "body": "The app crashes immediately on my iPhone 8 (iOS 15). Other staff are fine.",
+      "gloss": null,
+      "gold": {
+        "action": "reply",
+        "reason": "English ticket. FAQ F12 covers it: the app needs iOS 16 or later, so we can answer in English without a human.",
+        "category": "bug",
+        "language": "en",
+        "priority": "P3"
+      },
+      "gold_faq": [
+        "F12"
+      ],
+      "pred": {
+        "action": "handoff",
+        "language": "en",
+        "category": "bug",
+        "priority": "P3",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": false,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": true,
+      "route": [
+        "Handoff: auto-reply rejected by verification."
+      ],
+      "faq_ids": [
+        "F12"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "One customer is experiencing a crash, but there is a known OS version requirement (P3). Handoff: auto-reply rejected by verification.",
+      "draft_reply": null,
+      "handoff_note": "The customer is experiencing app crashes on an iPhone 8 with iOS 15, which does not meet the mobile app requirements of iOS 16 or later. Auto-reply rejected: reviewer: The reply contains unsupported claims because the help-centre section only refers to 'The app', not 'Roosterly'.; unsupported claims: Roosterly works on iOS 16 and later and Android 10 and later.",
+      "back_translation_en": "Hello. Roosterly works on iOS 16 and later and Android 10 and later. Best regards, Team Roosterly",
+      "checks": {
+        "verdict": "fail",
+        "language_detected": "en",
+        "language_scores": {
+          "nl": 0,
+          "en": 5,
+          "de": 0
+        },
+        "anchors_found": [
+          "iOS 16",
+          "Android 10"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": [
+          "reviewer: The reply contains unsupported claims because the help-centre section only refers to 'The app', not 'Roosterly'.",
+          "unsupported claims: Roosterly works on iOS 16 and later and Android 10 and later."
+        ]
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2838,
+        "output_tokens": 437,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "E02",
+      "source": "nordavo",
+      "subject": "Btw-nummer",
+      "body": "Ons btw-nummer is veranderd. Kunnen jullie het nieuwe op onze facturen zetten?",
+      "gloss": null,
+      "gold": {
+        "action": "reply",
+        "reason": "How to change invoice details is in FAQ F06. Reply in Dutch.",
+        "category": "billing",
+        "language": "nl",
+        "priority": "P4"
+      },
+      "gold_faq": [
+        "F06"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "nl",
+        "category": "billing",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F06."
+      ],
+      "faq_ids": [
+        "F06"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "This is a routine administrative update request with no urgency or blockage (P4). Reply: answered by help centre F06.",
+      "draft_reply": "Beste klant, je kunt het btw-nummer voor toekomstige facturen zelf aanpassen onder Instellingen → Bedrijfsgegevens. Facturen worden gemaild op de 1e van elke maand en je kunt ze downloaden onder Instellingen → Abonnement → Facturen. Met vriendelijke groet, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Dear customer, you can change the VAT number for future invoices yourself under Settings -> Company details. Invoices are emailed on the 1st of every month and you can download them under Settings -> Subscription -> Invoices. Sincerely, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "nl",
+        "language_scores": {
+          "nl": 14,
+          "en": 0,
+          "de": 0
+        },
+        "anchors_found": [
+          "Instellingen → Abonnement → Facturen",
+          "Instellingen → Bedrijfsgegevens"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2942,
+        "output_tokens": 456,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "E03",
+      "source": "nordavo",
+      "subject": "Terugbetaling",
+      "body": "We waren in augustus dicht wegens verbouwing. Kunnen we die maand terugkrijgen?",
+      "gloss": null,
+      "gold": {
+        "action": "handoff",
+        "reason": "Refund request ('terugkrijgen' = get back). Client rule: refunds always go to a human.",
+        "category": "billing",
+        "language": "nl",
+        "priority": "P2"
+      },
+      "gold_faq": [],
+      "pred": {
+        "action": "handoff",
+        "language": "nl",
+        "category": "billing",
+        "priority": "P2",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Handoff: client rule, refunds and disputed charges always go to a human."
+      ],
+      "faq_ids": [],
+      "rule_triggers": [
+        "refund_or_dispute"
+      ],
+      "flags": [],
+      "reason": "Money or refunds are involved, which requires human handling (P2). Handoff: client rule, refunds and disputed charges always go to a human.",
+      "draft_reply": null,
+      "handoff_note": "Customer is requesting a refund for August due to being closed for renovations. This requires manual review by a human agent as per the refund and dispute rule. Client rule: refund_or_dispute.",
+      "back_translation_en": null,
+      "checks": {},
+      "usage": {
+        "llm_calls": 1,
+        "input_tokens": 1681,
+        "output_tokens": 217,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "E04",
+      "source": "nordavo",
+      "subject": "Dienst ruilen",
+      "body": "Hoe ruil ik een dienst met een collega?",
+      "gloss": null,
+      "gold": {
+        "action": "reply",
+        "reason": "Dutch how-to question about swapping shifts, answered by FAQ F03. Reply in Dutch.",
+        "category": "question",
+        "language": "nl",
+        "priority": "P4"
+      },
+      "gold_faq": [
+        "F03"
+      ],
+      "pred": {
+        "action": "handoff",
+        "language": "nl",
+        "category": "question",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": false,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": true,
+      "route": [
+        "Handoff: auto-reply rejected by verification."
+      ],
+      "faq_ids": [
+        "F03"
+      ],
+      "rule_triggers": [],
+      "flags": [
+        "redrafted_for_untranslated_words"
+      ],
+      "reason": "This is a standard how-to question with no urgency (P4). Handoff: auto-reply rejected by verification.",
+      "draft_reply": null,
+      "handoff_note": "The customer wants to know how to swap shifts. You can inform them that employees open the shift in the app and tap 'Ruil aanbieden' (Offer swap), and that colleagues with the same role can accept it. Auto-reply rejected: reviewer: The verdict is fail because the word Collega's is untranslated.; untranslated words: Collega's",
+      "back_translation_en": "Hello. Employees open the shift in the app and tap \"Ruil aanbieden\". Colleagues with the same role can accept the swap. The manager approves this under Rooster → Verzoeken. Kind regards, Team Roosterly",
+      "checks": {
+        "verdict": "fail",
+        "language_detected": "nl",
+        "language_scores": {
+          "nl": 12,
+          "en": 1,
+          "de": 1
+        },
+        "anchors_found": [
+          "Rooster → Verzoeken",
+          "Ruil aanbieden"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": [
+          "reviewer: The verdict is fail because the word Collega's is untranslated.",
+          "untranslated words: Collega's"
+        ]
+      },
+      "usage": {
+        "llm_calls": 5,
+        "input_tokens": 4217,
+        "output_tokens": 717,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "E05",
+      "source": "nordavo",
+      "subject": "Google Agenda",
+      "body": "Graag een koppeling met Google Agenda voor de diensten.",
+      "gloss": null,
+      "gold": {
+        "action": "reply",
+        "reason": "Feature request (Google Calendar sync). Acknowledge in Dutch and point to the roadmap (F10).",
+        "category": "feature_request",
+        "language": "nl",
+        "priority": "P4"
+      },
+      "gold_faq": [
+        "F10"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "nl",
+        "category": "feature_request",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F10."
+      ],
+      "faq_ids": [
+        "F10"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "It is a feature request with no urgency (P4). Reply: answered by help centre F10.",
+      "draft_reply": "Beste gebruiker, we lezen elk idee en functieverzoeken plaatsen we op onze openbare roadmap op roadmap.roosterly.nl, waar je op ideeën kunt stemmen. We kunnen geen opleverdatum beloven voor individuele verzoeken. Met vriendelijke groet, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Dear user, we read every idea and feature requests are placed on our public roadmap at roadmap.roosterly.nl, where you can vote on ideas. We cannot promise a delivery date for individual requests. Kind regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "nl",
+        "language_scores": {
+          "nl": 14,
+          "en": 0,
+          "de": 0
+        },
+        "anchors_found": [
+          "roadmap.roosterly.nl"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2870,
+        "output_tokens": 426,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "E06",
+      "source": "nordavo",
+      "subject": "Can't publish rota",
+      "body": "When I click Publish I get 'Something went wrong'. Next week's rota is not visible for staff.",
+      "gloss": null,
+      "gold": {
+        "action": "handoff",
+        "reason": "One customer blocked from publishing: P2, needs an engineer.",
+        "category": "bug",
+        "language": "en",
+        "priority": "P2"
+      },
+      "gold_faq": [],
+      "pred": {
+        "action": "handoff",
+        "language": "en",
+        "category": "bug",
+        "priority": "P2",
+        "confidence": 0.95
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Handoff: not covered by the help centre: Why does clicking Publish result in 'Something went wrong' and how can I publish the rota?."
+      ],
+      "faq_ids": [],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "One customer is blocked from publishing their rota (P2). Handoff: not covered by the help centre: Why does clicking Publish result in 'Something went wrong' and how can I publish the rota?.",
+      "draft_reply": null,
+      "handoff_note": "The customer on the Plus plan is experiencing a bug where clicking Publish on the rota gives a 'Something went wrong' error and staff cannot see next week's rota. A human support agent needs to investigate the publishing failure.",
+      "back_translation_en": null,
+      "checks": {},
+      "usage": {
+        "llm_calls": 1,
+        "input_tokens": 1683,
+        "output_tokens": 224,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "E07",
+      "source": "nordavo",
+      "subject": "Prijs Plus",
+      "body": "Wat kost Plus voor 25 medewerkers?",
+      "gloss": null,
+      "gold": {
+        "action": "reply",
+        "reason": "Price question answered by F05 (25 x €6 = €150 excl. VAT). Reply in Dutch.",
+        "category": "billing",
+        "language": "nl",
+        "priority": "P4"
+      },
+      "gold_faq": [
+        "F05"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "nl",
+        "category": "billing",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F05."
+      ],
+      "faq_ids": [
+        "F05"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "It is a standard pricing and information request with no urgency (P4). Reply: answered by help centre F05.",
+      "draft_reply": "Beste klant, Plus kost €6 per actieve medewerker per maand, exclusief btw. Voor 25 medewerkers is de berekening 25 x €6 = €150 per maand, exclusief btw. Met vriendelijke groet, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Dear customer, Plus costs €6 per active employee per month, excluding VAT. For 25 employees the calculation is 25 x €6 = €150 per month, excluding VAT. Kind regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "nl",
+        "language_scores": {
+          "nl": 5,
+          "en": 0,
+          "de": 0
+        },
+        "anchors_found": [
+          "€6"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2916,
+        "output_tokens": 458,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "E08",
+      "source": "nordavo",
+      "subject": "Investeringskans",
+      "body": "Verdubbel je geld in 7 dagen met ons cryptofonds.",
+      "gloss": null,
+      "gold": {
+        "action": "close",
+        "reason": "Spam (crypto offer): close it.",
+        "category": "other",
+        "language": "nl",
+        "priority": "P4"
+      },
+      "gold_faq": [],
+      "pred": {
+        "action": "close",
+        "language": "nl",
+        "category": "other",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Close: spam, not a customer request."
+      ],
+      "faq_ids": [],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "The message is spam and requires no support action (P4). Close: spam, not a customer request.",
+      "draft_reply": null,
+      "handoff_note": null,
+      "back_translation_en": null,
+      "checks": {},
+      "usage": {
+        "llm_calls": 1,
+        "input_tokens": 1675,
+        "output_tokens": 178,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "E09",
+      "source": "nordavo",
+      "subject": "Inzageverzoek",
+      "body": "Ik wil graag inzage in alle persoonsgegevens die jullie over mij bewaren (AVG).",
+      "gloss": null,
+      "gold": {
+        "action": "handoff",
+        "reason": "GDPR access request ('inzageverzoek', AVG = Dutch GDPR): always a human.",
+        "category": "other",
+        "language": "nl",
+        "priority": "P2"
+      },
+      "gold_faq": [],
+      "pred": {
+        "action": "handoff",
+        "language": "nl",
+        "category": "other",
+        "priority": "P2",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Handoff: client rule, personal data (GDPR/AVG) requests always go to a human."
+      ],
+      "faq_ids": [],
+      "rule_triggers": [
+        "gdpr"
+      ],
+      "flags": [],
+      "reason": "Personal data requests (GDPR) always go to a human and involve compliance obligations (P2). Handoff: client rule, personal data (GDPR/AVG) requests always go to a human.",
+      "draft_reply": null,
+      "handoff_note": "The customer is requesting a GDPR data access overview. This requires human handling according to our data privacy procedures. Client rule: gdpr.",
+      "back_translation_en": null,
+      "checks": {},
+      "usage": {
+        "llm_calls": 1,
+        "input_tokens": 1680,
+        "output_tokens": 211,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "E10",
+      "source": "nordavo",
+      "subject": "Onderhoud",
+      "body": "Is er vanavond onderhoud gepland?",
+      "gloss": null,
+      "gold": {
+        "action": "reply",
+        "reason": "Asks about planned maintenance tonight. Point to the status page (F11), in Dutch.",
+        "category": "question",
+        "language": "nl",
+        "priority": "P4"
+      },
+      "gold_faq": [
+        "F11"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "nl",
+        "category": "question",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F11."
+      ],
+      "faq_ids": [
+        "F11"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "This is a routine informational question with no urgency (P4). Reply: answered by help centre F11.",
+      "draft_reply": "Beste klant, je kunt status.roosterly.nl bekijken voor actuele storingen en gepland onderhoud. Met vriendelijke groet, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Dear customer, you can check status.roosterly.nl for current outages and planned maintenance. Kind regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "nl",
+        "language_scores": {
+          "nl": 7,
+          "en": 0,
+          "de": 0
+        },
+        "anchors_found": [
+          "status.roosterly.nl"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2784,
+        "output_tokens": 391,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "X01",
+      "source": "extra",
+      "subject": "URGENT clock-in broken",
+      "body": "URGENT: since 07:30 none of the staff in our two cafés in Utrecht can clock in. The app just shows a spinning wheel. Breakfast service starts at 8.",
+      "gloss": null,
+      "gold": {
+        "language": "en",
+        "category": "bug",
+        "priority": "P1",
+        "action": "handoff",
+        "reason": "English. Many users blocked right now: P1, needs a human."
+      },
+      "gold_faq": [],
+      "pred": {
+        "action": "handoff",
+        "language": "en",
+        "category": "bug",
+        "priority": "P1",
+        "confidence": 0.95
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Handoff: P1, needs a human right away."
+      ],
+      "faq_ids": [],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "Multiple users are blocked right now during critical business hours (P1). Handoff: P1, needs a human right away.",
+      "draft_reply": null,
+      "handoff_note": "Multiple staff members at two café locations in Utrecht are unable to clock in because the app shows a spinning wheel since 07:30. This is an urgent bug affecting live operations during breakfast service. Check status.roosterly.nl or investigate immediately.",
+      "back_translation_en": null,
+      "checks": {},
+      "usage": {
+        "llm_calls": 1,
+        "input_tokens": 1703,
+        "output_tokens": 236,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "X02",
+      "source": "extra",
+      "subject": "Invoice",
+      "body": "Hi, quick one: where do I download last month's invoice? Our bookkeeper in Zwolle needs it. Thanks, Pieter",
+      "gloss": null,
+      "gold": {
+        "language": "en",
+        "category": "billing",
+        "priority": "P4",
+        "action": "reply",
+        "reason": "English how-to, answered by F06."
+      },
+      "gold_faq": [
+        "F06"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "en",
+        "category": "billing",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F06."
+      ],
+      "faq_ids": [
+        "F06"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "This is a standard how-to billing question with no urgency (P4). Reply: answered by help centre F06.",
+      "draft_reply": "Hi Pieter, invoices can be downloaded under Instellingen → Abonnement → Facturen (Settings → Subscription → Invoices). They are emailed on the 1st of every month. Best regards, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Hi Pieter, invoices can be downloaded under Instellingen → Abonnement → Facturen (Settings → Subscription → Invoices). They are emailed on the 1st of every month. Best regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "en",
+        "language_scores": {
+          "nl": 0,
+          "en": 8,
+          "de": 0
+        },
+        "anchors_found": [
+          "Instellingen → Abonnement → Facturen"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2930,
+        "output_tokens": 413,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "X03",
+      "source": "extra",
+      "subject": "AFAS",
+      "body": "We have the Basis plan. Can Roosterly send our approved hours to AFAS?",
+      "gloss": null,
+      "gold": {
+        "language": "en",
+        "category": "question",
+        "priority": "P4",
+        "action": "reply",
+        "reason": "English. F04 answers it: AFAS export exists and is part of the Plus plan."
+      },
+      "gold_faq": [
+        "F04"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "en",
+        "category": "question",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F04."
+      ],
+      "faq_ids": [
+        "F04"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "This is a straightforward informational how-to and feature availability question with no urgency (P4). Reply: answered by help centre F04.",
+      "draft_reply": "Hello. Roosterly exports approved hours to AFAS, but the AFAS integration is part of the Plus plan. Since you have the Basis plan, you can export as a CSV file. Best regards, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Hello. Roosterly exports approved hours to AFAS, but the AFAS integration is part of the Plus plan. Since you have the Basis plan, you can export as a CSV file. Best regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "en",
+        "language_scores": {
+          "nl": 0,
+          "en": 13,
+          "de": 0
+        },
+        "anchors_found": [
+          "AFAS",
+          "CSV"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2945,
+        "output_tokens": 438,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "X04",
+      "source": "extra",
+      "subject": "Uren naar AFAS",
+      "body": "Kan Roosterly onze goedgekeurde uren naar AFAS sturen? We hebben Basis.",
+      "gloss": "Can Roosterly send our approved hours to AFAS? We have Basis.",
+      "gold": {
+        "language": "nl",
+        "category": "question",
+        "priority": "P4",
+        "action": "reply",
+        "reason": "Dutch. F04 answers it: AFAS export exists and is part of the Plus plan."
+      },
+      "gold_faq": [
+        "F04"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "nl",
+        "category": "question",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F04."
+      ],
+      "faq_ids": [
+        "F04"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "It is a standard how-to and plan information question with no urgency or blocked operations (P4). Reply: answered by help centre F04.",
+      "draft_reply": "Beste klant, Roosterly exporteert goedgekeurde uren naar Nmbrs, Loket.nl en AFAS, of als een CSV-bestand. Je stelt dit in onder Instellingen → Koppelingen → Salaris. De integraties met Nmbrs, Loket.nl en AFAS maken echter deel uit van het Plus-pakket. Met vriendelijke groet, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Dear customer, Roosterly exports approved hours to Nmbrs, Loket.nl and AFAS, or as a CSV file. You set this up under Settings -> Integrations -> Payroll. However, the integrations with Nmbrs, Loket.nl and AFAS are part of the Plus plan. Kind regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "nl",
+        "language_scores": {
+          "nl": 14,
+          "en": 2,
+          "de": 0
+        },
+        "anchors_found": [
+          "Instellingen → Koppelingen → Salaris",
+          "Loket.nl",
+          "AFAS",
+          "CSV"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 3005,
+        "output_tokens": 537,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "X05",
+      "source": "extra",
+      "subject": "Falsche Schichten",
+      "body": "Seit heute Morgen zeigt die App bei allen Mitarbeitern in Venlo falsche Schichten an. Bitte dringend prüfen.",
+      "gloss": "Since this morning the app shows wrong shifts for all employees in Venlo. Please check urgently.",
+      "gold": {
+        "language": "de",
+        "category": "bug",
+        "priority": null,
+        "action": "handoff",
+        "reason": "German bug report not covered by the FAQ: human."
+      },
+      "gold_faq": [],
+      "pred": {
+        "action": "handoff",
+        "language": "de",
+        "category": "bug",
+        "priority": "P2",
+        "confidence": 0.95
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Handoff: not covered by the help centre: Why is the app showing incorrect shifts for all employees in Venlo since this morning?."
+      ],
+      "faq_ids": [],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "One customer location is blocked with incorrect shift data (P2). Handoff: not covered by the help centre: Why is the app showing incorrect shifts for all employees in Venlo since this morning?.",
+      "draft_reply": null,
+      "handoff_note": "The customer on the Plus plan reports incorrect shifts for all employees at the Venlo location since this morning. Please check the system for data synchronization issues at this location.",
+      "back_translation_en": null,
+      "checks": {},
+      "usage": {
+        "llm_calls": 1,
+        "input_tokens": 1684,
+        "output_tokens": 220,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "X06",
+      "source": "extra",
+      "subject": "Untranslated button",
+      "body": "The Dutch word 'Uitnodigen' on the invite button is not translated in the English app. Minor thing.",
+      "gloss": null,
+      "gold": {
+        "language": "en",
+        "category": "bug",
+        "priority": "P4",
+        "action": "handoff",
+        "reason": "English cosmetic bug, not in the FAQ: human, no urgency."
+      },
+      "gold_faq": [],
+      "pred": {
+        "action": "handoff",
+        "language": "en",
+        "category": "bug",
+        "priority": "P4",
+        "confidence": 0.95
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Handoff: not covered by the help centre: Why is the word 'Uitnodigen' not translated in the English app?."
+      ],
+      "faq_ids": [],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "It is a minor cosmetic issue with no blocking impact (P4). Handoff: not covered by the help centre: Why is the word 'Uitnodigen' not translated in the English app?.",
+      "draft_reply": null,
+      "handoff_note": "Customer reports that the 'Uitnodigen' button is not translated into English in the app. This is a minor localization bug that should be forwarded to the development team.",
+      "back_translation_en": null,
+      "checks": {},
+      "usage": {
+        "llm_calls": 1,
+        "input_tokens": 1683,
+        "output_tokens": 213,
+        "thinking_tokens": 0
+      }
+    },
+    {
+      "id": "X07",
+      "source": "extra",
+      "subject": "Export Loket",
+      "body": "Wij gebruiken Loket.nl. Kan ik de uren per maand exporteren?",
+      "gloss": "We use Loket.nl. Can I export the hours per month?",
+      "gold": {
+        "language": "nl",
+        "category": "question",
+        "priority": "P4",
+        "action": "reply",
+        "reason": "Dutch. F04: exports to Loket.nl run per pay period (week, four weeks or month); Plus plan."
+      },
+      "gold_faq": [
+        "F04"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "nl",
+        "category": "question",
+        "priority": "P4",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "priority": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F04."
+      ],
+      "faq_ids": [
+        "F04"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "This is a straightforward how-to question with no urgency or blocking issues (P4). Reply: answered by help centre F04.",
+      "draft_reply": "Beste klant, je kunt goedgekeurde uren exporteren naar Loket.nl via Instellingen → Koppelingen → Salaris. Deze export loopt per loonperiode zoals per maand. Met vriendelijke groet, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Dear customer, you can export approved hours to Loket.nl via Settings → Integrations → Payroll. This export runs per pay period such as per month. Kind regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "nl",
+        "language_scores": {
+          "nl": 7,
+          "en": 0,
+          "de": 0
+        },
+        "anchors_found": [
+          "Instellingen → Koppelingen → Salaris",
+          "Loket.nl"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2953,
+        "output_tokens": 458,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    },
+    {
+      "id": "X08",
+      "source": "extra",
+      "subject": "Login trouble",
+      "body": "Morning team, I forgot my password and the reset email never arrived. What now? Regards, Sanne",
+      "gloss": null,
+      "gold": {
+        "language": "en",
+        "category": "question",
+        "priority": null,
+        "action": "reply",
+        "reason": "English. F01 covers it, including checking the spam folder."
+      },
+      "gold_faq": [
+        "F01"
+      ],
+      "pred": {
+        "action": "reply",
+        "language": "en",
+        "category": "question",
+        "priority": "P3",
+        "confidence": 1.0
+      },
+      "match": {
+        "action": true,
+        "category": true,
+        "language": true
+      },
+      "unsafe": false,
+      "over_escalated": false,
+      "route": [
+        "Reply: answered by help centre F01."
+      ],
+      "faq_ids": [
+        "F01"
+      ],
+      "rule_triggers": [],
+      "flags": [],
+      "reason": "One customer is blocked from logging in, but there is a workaround (P3). Reply: answered by help centre F01.",
+      "draft_reply": "Hello Sanne. Go to app.roosterly.nl/login, click \"Wachtwoord vergeten\" (Forgot password) and enter your email address. The reset link is valid for 60 minutes. If you receive no email within 10 minutes, check your spam folder. Best regards, Team Roosterly",
+      "handoff_note": null,
+      "back_translation_en": "Hello Sanne. Go to app.roosterly.nl/login, click \"Wachtwoord vergeten\" (Forgot password) and enter your email address. The reset link is valid for 60 minutes. If you receive no email within 10 minutes, check your spam folder. Best regards, Team Roosterly",
+      "checks": {
+        "verdict": "pass",
+        "language_detected": "en",
+        "language_scores": {
+          "nl": 0,
+          "en": 11,
+          "de": 0
+        },
+        "anchors_found": [
+          "Wachtwoord vergeten",
+          "app.roosterly.nl/login"
+        ],
+        "foreign_contacts": [],
+        "rules_in_reply": [],
+        "commitments": [],
+        "problems": []
+      },
+      "usage": {
+        "llm_calls": 3,
+        "input_tokens": 2928,
+        "output_tokens": 502,
+        "thinking_tokens": 0
+      },
+      "reply_checks": {
+        "faq_match": true,
+        "language_ok": true
+      }
+    }
+  ]
+}
